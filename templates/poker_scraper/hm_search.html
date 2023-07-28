@@ -1,0 +1,53 @@
+{% extends 'base_generic.html' %}
+
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+<link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+
+{% block content %}
+    <form method="get">
+        <input type="text" name="q" value="{{ request.GET.q }}">
+        <input type="submit" value="Search">
+    </form>
+
+    <div class="container-fluid p-2">
+        <div class="card card-header-actions mx-auto">
+            <div class="card-header">
+                <div class="h4">Hendon Mob Profiles</div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped cell-border m-2 justify-content-center" id="pokerplayers">
+                    <thead>
+                    <tr>
+                        <th>Local DB</th>
+                        <th>Hendon Mob ID</th>
+                        <th>Player</th>
+                        <th>Birthplace</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for player in players %}
+                        <tr>
+                            <td>
+                            {% if player.in_db %}
+                                <a href="" class="btn btn-info btn-sm">Exists</a>
+                            {% else %}
+                                <a href="{% url 'poker_scraper:add_hm_player' %}?q={{ request.GET.q }}&id={{ player.id }}" class="btn btn-success btn-sm">Add</a>
+                            {% endif %}
+                            </td>
+                            <td class="text-center">{{ player.id }}</td>
+                            <td>{{ player.name }}</td>
+                            <td>{{ player.birthplace }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+

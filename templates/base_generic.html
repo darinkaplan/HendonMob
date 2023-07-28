@@ -14,7 +14,8 @@
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <!-- You may include site-wide navigation links here -->
-        <a class="navbar-brand" href="{% url 'poker_scraper:search' %}">Search</a>
+        <a class="navbar-brand" href="{% url 'poker_scraper:search' %}">Search Local DB</a>
+        <a class="navbar-brand" href="{% url 'poker_scraper:hm_search' %}">Search Hendon Mob DB</a>
         <a class="navbar-brand" href="{% url 'poker_scraper:add_player' %}">Add Player</a>
         <a class="navbar-brand" href="{% url 'poker_scraper:add_tournament_result' %}">Add Tournament Result</a>
 {#        <a class="navbar-brand" href="{% url 'poker_scraper:compare' %}">Compare</a>#}

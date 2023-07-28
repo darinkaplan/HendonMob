@@ -2,17 +2,66 @@ from .models import Player, TournamentResult, UserProfile
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from .forms import PlayerForm, TournamentResultForm
-
+from .scraper import tournament_results, player_search
 
 def search(request):
     query = request.GET.get('q', '')
     players = Player.objects.filter(name__icontains=query)
     return render(request, 'poker_scraper/search.html', {'players': players})
 
+def hendon_mob_search(request):
+    query = request.GET.get('q', '')
+    hendon_mob_players = player_search(query) if query != '' else None
+
+    #determine if each player in db for button usage
+    if hendon_mob_players is not None:
+        for x in hendon_mob_players:
+            x['in_db'] = Player.objects.filter(hendon_mob_id=x['id']).exists()
+
+    return render(request, 'poker_scraper/hm_search.html', {'players': hendon_mob_players})
+
+def hendon_mob_add_player(request):
+    query = request.GET.get('q', '')
+    id = request.GET.get('id', '')
+    hendon_mob_players = player_search(query) if query != '' else None
+    player_found = [x for x in hendon_mob_players if x['id']==id]
+    player = player_found[0] if len(player_found)>0 else None
+    if player is not None:
+        # check to see if player is already in db
+        p = Player.objects.filter(hendon_mob_id=id)
+        if len(p)==0: # Not in local db
+            new_player = Player(
+                hendon_mob_id=id,
+                name=player['name'],
+                img_url=player['image'],
+                birthplace=player['birthplace'],
+            )
+            new_player.save()
+
+    #determine if each player in db for button usage
+    for x in hendon_mob_players:
+        x['in_db'] = Player.objects.filter(hendon_mob_id=x['id']).exists()
+
+    return render(request, 'poker_scraper/hm_search.html', {'players': hendon_mob_players})
+
+
 def display(request, pk):
     player = Player.objects.get(pk=pk)
-    tournament_results = TournamentResult.objects.filter(player=player)
-    return render(request, 'poker_scraper/display.html', {'player': player, 'tournament_results': tournament_results})
+    items = tournament_results(player.hendon_mob_id)
+    results = []
+
+    for item in items:
+        result = TournamentResult(
+            player=player,
+            tournament_name=item['event_name'],
+            position=item['place'],
+            prize=item['currency'],
+            gpi_points=item['points'],
+            date=item['date']
+        )
+        results.append(result)
+
+    return render(request, 'poker_scraper/display.html', {'player': player, 'tournament_results': results})
 
 def compare(request):
     # Depends on your requirements
