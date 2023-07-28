@@ -1,0 +1,12 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+<form method="get">
+    <input type="text" name="q" value="{{ request.GET.q }}">
+    <input type="submit" value="Search">
+</form>
+
+{% for player in players %}
+    <p><a href="{% url 'poker_scraper:display' player.pk %}">{{ player.name }}</a></p>
+{% endfor %}
+{% endblock %}

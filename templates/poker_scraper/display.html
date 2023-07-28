@@ -1,0 +1,9 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+<h1>{{ player.name }}</h1>
+{% if player.img_url %}<img src="{{ player.img_url }}">{% endif %}
+{% for result in tournament_results %}
+    <p>{{ result.tournament_name }}: {{ result.position }}</p>
+{% endfor %}
+{% endblock %}
