@@ -1,0 +1,35 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Select Friends</h2>
+    <form method="post">
+        {% csrf_token %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Select</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for player in players %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td><a href="{% url 'poker_scraper:display' player.player.id %}">{{ player.player.name }}</a></td>
+                        <td>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="friend" value="{{ player.player.id }}" id="friend{{ forloop.counter }}" {% if player.is_friend %}checked{% endif %}>
+                                <label class="form-check-label" for="friend{{ forloop.counter }}">
+                                </label>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+{% endblock %}

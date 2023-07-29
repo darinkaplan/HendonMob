@@ -1,8 +1,10 @@
 from .models import Player, TournamentResult, UserProfile
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 from .forms import PlayerForm, TournamentResultForm
 from .scraper import tournament_results, player_search
+
 
 def search(request):
     query = request.GET.get('q', '')
@@ -39,6 +41,18 @@ def hendon_mob_add_player(request):
             new_player.save()
 
     #determine if each player in db for button usage
+    for x in hendon_mob_players:
+        x['in_db'] = Player.objects.filter(hendon_mob_id=x['id']).exists()
+
+    return render(request, 'poker_scraper/hm_search.html', {'players': hendon_mob_players})
+
+def hendon_mob_delete_player(request):
+    query = request.GET.get('q', '')
+    id = request.GET.get('id', '')
+    p = Player.objects.filter(hendon_mob_id=id).delete()
+
+    #determine if each player in db for button usage
+    hendon_mob_players = player_search(query) if query != '' else []
     for x in hendon_mob_players:
         x['in_db'] = Player.objects.filter(hendon_mob_id=x['id']).exists()
 
@@ -96,3 +110,31 @@ def add_tournament_result(request):
     else:
         form = TournamentResultForm()
     return render(request, 'poker_scraper/add_tournament_result.html', {'form': form})
+
+
+def select_friends(request):
+    profile = UserProfile.objects.get(user=request.user)
+    current_friends = profile.friends.all()
+
+    if request.method == 'POST':
+        selected_friends_ids = request.POST.getlist('friend')
+
+        for player in Player.objects.all():
+            if str(player.id) in selected_friends_ids:
+                profile.friends.add(player)
+            elif player in current_friends:
+                profile.friends.remove(player)
+
+        return redirect('poker_scraper:view_friends')
+    else:
+        players = Player.objects.all()
+        player_friends = [{'player': player, 'is_friend': player in current_friends} for player in players]
+        return render(request, 'poker_scraper/select_friends.html', {'players': player_friends})
+
+
+
+@login_required
+def view_friends(request):
+    profile = UserProfile.objects.get(user=request.user)
+    friends = profile.friends.all()
+    return render(request, 'poker_scraper/view_friends.html', {'friends': friends})

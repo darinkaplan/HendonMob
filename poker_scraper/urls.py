@@ -13,6 +13,8 @@ urlpatterns = [
     path('logout/', auth_views.LoginView.as_view(), name='logout'),
     path('add_player/', views.add_player, name='add_player'),
     path('add_hm_player/', views.hendon_mob_add_player, name='add_hm_player'),
+    path('delete_hm_player/', views.hendon_mob_delete_player, name='delete_hm_player'),
     path('add_tournament_result/', views.add_tournament_result, name='add_tournament_result'),
-
+    path('select_friends/', views.select_friends, name='select_friends'),
+    path('view_friends/', views.view_friends, name='view_friends'),
 ]

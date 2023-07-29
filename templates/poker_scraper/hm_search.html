@@ -33,7 +33,7 @@
                         <tr>
                             <td>
                             {% if player.in_db %}
-                                <a href="" class="btn btn-info btn-sm">Exists</a>
+                                <a href="{% url 'poker_scraper:delete_hm_player' %}?q={{ request.GET.q }}&id={{ player.id }}" class="btn btn-danger btn-sm">Remove</a>
                             {% else %}
                                 <a href="{% url 'poker_scraper:add_hm_player' %}?q={{ request.GET.q }}&id={{ player.id }}" class="btn btn-success btn-sm">Add</a>
                             {% endif %}
