@@ -1,15 +1,46 @@
-{% extends "base_generic.html" %}
+{% extends 'base_generic.html' %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2>My Friends</h2>
-    {% for friend in friends %}
-    <div class="card mt-4">
-        <div class="card-body">
-            <h5 class="card-title">{{ friend.name }}</h5>
-            <a href="{% url 'poker_scraper:display' friend.id %}" class="btn btn-primary">View Details</a>
+    <div class="container">
+        <h2>View Friends</h2>
+        <div class="accordion" id="friendsAccordion">
+            {% for friend_result in friend_results %}
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="false"
+                                aria-controls="collapse{{ forloop.counter }}">
+                            {{ friend_result.friend.name }} - {{ friend_result.yearly_gpi_points|floatformat:2 }} GPI Points
+                        </button>
+                    </h2>
+                    <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse"
+                         aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#friendsAccordion">
+                        <div class="accordion-body">
+                            <ul>
+                                {% for result in friend_result.tournament_results %}
+                                    <div class="card bg-light border-top border-5 border-success mb-2">
+                                        <div class="card-header text-dark">{{ result.event_name }}</div>
+                                        <div class="card-body">
+                                            <p class="card-text">
+                                                Date: {{ result.date|date:"F j, Y" }}
+                                            </p>
+                                            <p class="card-text">
+                                                {{ result.place }} Place
+                                            </p>
+                                            <p class="card-text">
+                                                Prize: ${{ result.currency|floatformat:0 }}
+                                            </p>
+                                            <p class="card-text">
+                                                GPI Points: {{ result.points|floatformat:2 }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
     </div>
-    {% endfor %}
-</div>
 {% endblock %}

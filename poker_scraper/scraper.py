@@ -22,7 +22,7 @@ def tournament_results(hendon_mob_id):
     soup = bs4.BeautifulSoup(page.content, "html5lib")
 
     # The tournament result data is in "tr" tags all using class "row0"
-    scraped_data = soup.find_all("tr", class_="row0")
+    scraped_data = soup.select('tr.row0, tr.row1')
 
     results = []
 
@@ -34,15 +34,16 @@ def tournament_results(hendon_mob_id):
         currency = result.find("td", class_="currency")
         points = result.find("td", class_="points")
 
-        tournament_result = {
-            'date': datetime.strptime(tournament_date.text.strip(), "%d-%b-%Y"),
-            'venue_flag': venue_flag.text.strip(),
-            'event_name': event_name.text.strip(),
-            'place': place.text.strip(),
-            'currency': convert_to_float(currency.text.strip()),
-            'points': float(points.text.strip()) if points.text.strip() != '' else 0.0,
-        }
-        results.append(tournament_result)
+        if currency is not None:
+            tournament_result = {
+                'date': datetime.strptime(tournament_date.text.strip(), "%d-%b-%Y"),
+                'venue_flag': venue_flag.text.strip(),
+                'event_name': event_name.text.strip(),
+                'place': place.text.strip(),
+                'currency': convert_to_float(currency.text.strip()),
+                'points': float(points.text.strip()) if points.text.strip() != '' else 0.0,
+            }
+            results.append(tournament_result)
     return results
 
 def player_search(search_string):
@@ -87,3 +88,7 @@ def player_search(search_string):
         final.append(player_info_dic)
 
     return final
+
+#
+# x = tournament_results(171541)
+# print(x)

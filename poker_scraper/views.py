@@ -4,6 +4,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .forms import PlayerForm, TournamentResultForm
 from .scraper import tournament_results, player_search
+from datetime import datetime
+from django.db.models import Sum
 
 
 def search(request):
@@ -137,4 +139,18 @@ def select_friends(request):
 def view_friends(request):
     profile = UserProfile.objects.get(user=request.user)
     friends = profile.friends.all()
-    return render(request, 'poker_scraper/view_friends.html', {'friends': friends})
+    current_year = datetime.now().year
+
+    friend_results = []
+    for friend in friends:
+        tournaments = tournament_results(friend.hendon_mob_id)
+        yearly_tournament_results = [result for result in tournaments if result['date'].year == current_year]
+        yearly_gpi_points = sum(result['points'] for result in yearly_tournament_results)
+
+        friend_results.append({
+            'friend': friend,
+            'yearly_gpi_points': yearly_gpi_points,
+            'tournament_results': yearly_tournament_results,
+        })
+
+    return render(request, 'poker_scraper/view_friends.html', {'friend_results': friend_results})

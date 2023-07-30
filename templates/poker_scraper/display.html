@@ -5,22 +5,22 @@
 {% if player.img_url %}<img src="{{ player.img_url }}">{% endif %}
 {% for result in tournament_results %}
     <div class="card bg-light">
-    <div class="card-header text-dark">{{ result.tournament_name }}</div>
-    <div class="card-body">
-        <p class="card-text">
-            Date: {{ result.date|date:"F j, Y" }}
-        </p>
-        <p class="card-text">
-            Position: {{ result.position }}
-        </p>
-        <p class="card-text">
-            Prize: {{ result.prize }}
-        </p>
-        <p class="card-text">
-            GPI Points: {{ result.gpi_points }}
-        </p>
+        <div class="card-header text-dark">{{ result.tournament_name }}</div>
+        <div class="card-body">
+            <p class="card-text">
+                Date: {{ result.date|date:"F j, Y" }}
+            </p>
+            <p class="card-text">
+                Position: {{ result.position }}
+            </p>
+            <p class="card-text">
+                Prize: {{ result.prize }}
+            </p>
+            <p class="card-text">
+                GPI Points: {{ result.gpi_points }}
+            </p>
+        </div>
     </div>
-</div>
 
 {% endfor %}
 {% endblock %}
