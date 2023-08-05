@@ -7,6 +7,8 @@ from .scraper import tournament_results, player_search
 from datetime import datetime
 from django.db.models import Sum
 
+def empty(request):
+    return render(request, 'poker_scraper/blank.html')
 
 def search(request):
     query = request.GET.get('q', '')
@@ -51,14 +53,22 @@ def hendon_mob_add_player(request):
 def hendon_mob_delete_player(request):
     query = request.GET.get('q', '')
     id = request.GET.get('id', '')
-    p = Player.objects.filter(hendon_mob_id=id).delete()
+    page = request.GET.get('page', '')
+    if page=='1': #need to use player id, not hm id
+        p = Player.objects.filter(id=id).delete()
+    else:
+        p = Player.objects.filter(hendon_mob_id=id).delete()
 
     #determine if each player in db for button usage
     hendon_mob_players = player_search(query) if query != '' else []
     for x in hendon_mob_players:
         x['in_db'] = Player.objects.filter(hendon_mob_id=x['id']).exists()
 
-    return render(request, 'poker_scraper/hm_search.html', {'players': hendon_mob_players})
+    if page=='1':
+        players = Player.objects.all()
+        return render(request, 'poker_scraper/search.html', {'players': players})
+    else:
+        return render(request, 'poker_scraper/hm_search.html', {'players': hendon_mob_players})
 
 
 def display(request, pk):

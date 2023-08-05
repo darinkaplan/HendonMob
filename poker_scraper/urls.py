@@ -4,7 +4,8 @@ from . import views
 
 app_name = 'poker_scraper'
 urlpatterns = [
-    path('', views.search, name='search'),
+    path('', views.empty, name='empty'),
+    path('search', views.search, name='search'),
     path('hm_search/', views.hendon_mob_search, name='hm_search'),
     path('player/<int:pk>/', views.display, name='display'),
     path('compare/', views.compare, name='compare'),

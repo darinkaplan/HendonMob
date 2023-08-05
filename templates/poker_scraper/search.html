@@ -1,12 +1,27 @@
 {% extends 'base_generic.html' %}
-
 {% block content %}
-<form method="get">
-    <input type="text" name="q" value="{{ request.GET.q }}">
-    <input type="submit" value="Search">
-</form>
+    <div class="container">
+        <div class="row p-2 h3">
+            Local Players from Hendon Mob DB
+        </div>
+        <div class="row m-2">
+            <form method="get">
+                <input type="text" name="q" value="{{ request.GET.q }}">
+                <input type="submit" value="Search">
+            </form>
+        </div>
+        <div class="row m-2">
+            <a href="{% url 'poker_scraper:hm_search' %}"><button type="button" class="btn btn-success">Add Players From Hendon Mob DB</button></a>
+        </div>
+        <div class="row"></div>
 
-{% for player in players %}
-    <p><a href="{% url 'poker_scraper:display' player.pk %}">{{ player.name }}</a></p>
-{% endfor %}
+            {% for player in players %}
+                <div class="row pb-2">
+                    <div class="col-1 text-end"><a href="{% url 'poker_scraper:delete_hm_player' %}?q={{ request.GET.q }}&id={{ player.id }}&page=1" class="btn btn-danger btn-sm">X</a></div>
+                    <div class="col-11"><a href="{% url 'poker_scraper:display' player.pk %}">{{ player.name }}</a></div>
+                </div>
+            {% endfor %}
+
+    </div>
+    </div>
 {% endblock %}
