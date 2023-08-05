@@ -1,2 +1,2 @@
-web: gunicorn djangoACT.wsgi --log-file -
+web: gunicorn HendonMob.wsgi --log-file -
 
