@@ -2,7 +2,7 @@
 
 {% block content %}
 <h1>{{ player.name }}</h1>
-{% if player.img_url %}<img src="{{ player.img_url }}">{% endif %}
+{% if player.img_url %}<img width="200px" src="{{ player.img_url }}">{% endif %}
 {% for result in tournament_results %}
     <div class="card bg-light">
         <div class="card-header text-dark">{{ result.tournament_name }}</div>
@@ -14,10 +14,10 @@
                 Position: {{ result.position }}
             </p>
             <p class="card-text">
-                Prize: {{ result.prize }}
+                Prize: ${{ result.prize|floatformat:2 }}
             </p>
             <p class="card-text">
-                GPI Points: {{ result.gpi_points }}
+                GPI Points: {{ result.gpi_points|floatformat:2 }}
             </p>
         </div>
     </div>

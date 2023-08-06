@@ -2,21 +2,23 @@
 
 {% block content %}
 <div class="container">
-    <h2>Select Friends</h2>
+    <h2>Compare Friends</h2>
     <form method="post">
         {% csrf_token %}
         <table class="table">
             <thead>
                 <tr>
-                    <th scope="col">#</th>
+{#                    <th scope="col"></th>#}
                     <th scope="col">Name</th>
-                    <th scope="col">Select</th>
+                    <th scope="col">Compare</th>
                 </tr>
             </thead>
             <tbody>
                 {% for player in players %}
                     <tr>
-                        <th scope="row">{{ forloop.counter }}</th>
+{#                        <td>#}
+{#                             <div class="col-1 text-end"><a href="{% url 'poker_scraper:delete_hm_player' %}?q={{ request.GET.q }}&id={{ player.player.id }}&page=1" class="btn btn-danger btn-sm">Remove</a></div>#}
+{#                        </td>#}
                         <td><a href="{% url 'poker_scraper:display' player.player.id %}">{{ player.player.name }}</a></td>
                         <td>
                             <div class="form-check">
@@ -29,7 +31,7 @@
                 {% endfor %}
             </tbody>
         </table>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary">Compare Friends</button>
     </form>
 </div>
 {% endblock %}

@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import PlayerForm, TournamentResultForm
 from .scraper import tournament_results, player_search
 from datetime import datetime
-from django.db.models import Sum
+
 
 def empty(request):
     return render(request, 'poker_scraper/blank.html')
@@ -89,10 +89,6 @@ def display(request, pk):
 
     return render(request, 'poker_scraper/display.html', {'player': player, 'tournament_results': results})
 
-def compare(request):
-    # Depends on your requirements
-    pass
-
 def register(request):
     if request.method == "POST":
         form = UserCreationForm(request.POST)
@@ -141,14 +137,16 @@ def select_friends(request):
     else:
         players = Player.objects.all()
         player_friends = [{'player': player, 'is_friend': player in current_friends} for player in players]
-        return render(request, 'poker_scraper/select_friends.html', {'players': player_friends})
+        sorted_player_friends = sorted(player_friends, key=lambda x: x['player'].name.lower())
+
+        return render(request, 'poker_scraper/select_friends.html', {'players': sorted_player_friends})
 
 
 
 @login_required
 def view_friends(request):
     profile = UserProfile.objects.get(user=request.user)
-    friends = profile.friends.all()
+    friends = profile.friends.all().order_by('name')
     current_year = datetime.now().year
 
     friend_results = []
@@ -163,4 +161,6 @@ def view_friends(request):
             'tournament_results': yearly_tournament_results,
         })
 
-    return render(request, 'poker_scraper/view_friends.html', {'friend_results': friend_results})
+    sorted_results = sorted(friend_results, key=lambda x: x['yearly_gpi_points'], reverse=True)
+
+    return render(request, 'poker_scraper/view_friends.html', {'friend_results': sorted_results})

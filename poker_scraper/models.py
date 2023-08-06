@@ -6,7 +6,7 @@ class Player(models.Model):
     name = models.CharField(max_length=200)
     img_url = models.URLField(null=True, blank=True)
     birthplace = models.CharField(max_length=100, null=True, blank=True)
-    # Add any other fields as necessary
+
 
 class TournamentResult(models.Model):
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
