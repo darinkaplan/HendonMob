@@ -1,5 +1,5 @@
 {% extends 'base_generic.html' %}
-
+{% load humanize %}
 {% block content %}
 <h1>{{ player.name }}</h1>
 {% if player.img_url %}<img width="200px" src="{{ player.img_url }}">{% endif %}
@@ -14,7 +14,7 @@
                 Position: {{ result.position }}
             </p>
             <p class="card-text">
-                Prize: ${{ result.prize|floatformat:2 }}
+                Prize: ${{ result.prize|floatformat:"0"|intcomma }}
             </p>
             <p class="card-text">
                 GPI Points: {{ result.gpi_points|floatformat:2 }}

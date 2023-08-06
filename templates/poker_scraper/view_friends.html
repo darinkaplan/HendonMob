@@ -1,5 +1,5 @@
 {% extends 'base_generic.html' %}
-
+{% load humanize %}
 {% block content %}
     <div class="container">
         <h2>View Friends</h2>
@@ -28,7 +28,7 @@
                                                 {{ result.place }} Place
                                             </p>
                                             <p class="card-text">
-                                                Prize: ${{ result.currency|floatformat:0 }}
+                                                Prize: ${{ result.currency|floatformat:"0"|intcomma }}
                                             </p>
                                             <p class="card-text">
                                                 GPI Points: {{ result.points|floatformat:2 }}
